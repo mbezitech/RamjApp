@@ -77,16 +77,24 @@ class ApiService {
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    try {
+      final body = jsonDecode(response.body) as Map<String, dynamic>;
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return body;
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return body;
+      }
+
+      throw ApiException(
+        message: body['message'] ?? 'An error occurred',
+        statusCode: response.statusCode,
+      );
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException(
+        message: 'Invalid response format from server',
+        statusCode: response.statusCode,
+      );
     }
-
-    throw ApiException(
-      message: body['message'] ?? 'An error occurred',
-      statusCode: response.statusCode,
-    );
   }
 }
 
