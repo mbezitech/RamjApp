@@ -24,24 +24,39 @@ class ProfileScreen extends StatelessWidget {
         title: const Text('Profile'),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 32,
-                    backgroundColor: AppColors.primary,
-                    child: Text(
-                      user.name[0].toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3),
+                        width: 2,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(3),
+                    child: CircleAvatar(
+                      radius: 32,
+                      backgroundColor: AppColors.primary,
+                      child: Text(
+                        user.name[0].toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -57,15 +72,46 @@ class ProfileScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),
-                        Text(
-                          user.email,
-                          style: TextStyle(color: AppColors.textLight),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.email,
+                              size: 14,
+                              color: AppColors.textLight,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                user.email,
+                                style: TextStyle(
+                                  color: AppColors.textLight,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        if (user.phone != null)
-                          Text(
-                            user.phone!,
-                            style: TextStyle(color: AppColors.textLight),
+                        if (user.phone != null) ...[
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.phone,
+                                size: 14,
+                                color: AppColors.textLight,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                user.phone!,
+                                style: TextStyle(
+                                  color: AppColors.textLight,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
                           ),
+                        ],
                       ],
                     ),
                   ),
@@ -75,20 +121,34 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Account Information',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Account Information',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   _InfoRow(label: 'Account Type', value: user.role.toUpperCase()),
-                  const Divider(),
+                  const Divider(height: 24),
                   _InfoRow(
                     label: 'Verification Status',
                     value: user.isVerified ? 'Verified' : 'Not Verified',
@@ -97,11 +157,11 @@ class ProfileScreen extends StatelessWidget {
                         : AppColors.warning,
                   ),
                   if (user.businessName != null) ...[
-                    const Divider(),
+                    const Divider(height: 24),
                     _InfoRow(label: 'Business Name', value: user.businessName!),
                   ],
                   if (user.businessType != null) ...[
-                    const Divider(),
+                    const Divider(height: 24),
                     _InfoRow(
                       label: 'Business Type',
                       value: user.businessType!.toUpperCase(),

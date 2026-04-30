@@ -28,7 +28,7 @@
                     <option value="false" <?php echo e(request('verified') == 'false' ? 'selected' : ''); ?>>Unverified</option>
                 </select>
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
                 Filter
             </button>
         </form>
@@ -59,13 +59,13 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600"><?php echo e($user->email); ?></td>
                         <td class="px-6 py-4">
-                            <span class="px-2 py-1 text-xs rounded-full
-                                <?php if($user->role == 'admin'): ?> bg-purple-100 text-purple-800
-                                <?php elseif($user->role == 'business'): ?> bg-blue-100 text-blue-800
-                                <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
-                                <?php echo e(ucfirst($user->role)); ?>
+                             <span class="px-2 py-1 text-xs rounded-full
+                                 <?php if($user->role == 'admin'): ?> bg-purple-100 text-purple-800
+                                 <?php elseif($user->role == 'business'): ?> bg-primary-bg text-primary-text
+                                 <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
+                                 <?php echo e(ucfirst($user->role)); ?>
 
-                            </span>
+                             </span>
                         </td>
                         <td class="px-6 py-4">
                             <?php if($user->is_verified): ?>
@@ -75,8 +75,8 @@
                             <?php endif; ?>
                         </td>
                         <td class="px-6 py-4">
-                            <a href="<?php echo e(route('admin.users.show', $user->id)); ?>"
-                               class="text-blue-600 hover:underline text-sm mr-3">View</a>
+                             <a href="<?php echo e(route('admin.users.show', $user->id)); ?>"
+                                class="text-primary hover:underline text-sm mr-3">View</a>
                             <form method="POST" action="<?php echo e(route('admin.users.destroy', $user->id)); ?>"
                                   class="inline" onsubmit="return confirm('Delete this user?')">
                                 <?php echo csrf_field(); ?>

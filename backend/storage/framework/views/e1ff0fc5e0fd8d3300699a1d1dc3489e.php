@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - RamjApp Medical</title>
+    <title>Admin Login - MedFootApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#c74454',
+                        'primary-dark': '#8b2e3a',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="max-w-md w-full">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">RamjApp Medical</h1>
+            <img src="<?php echo e(asset('logo.png')); ?>" alt="MedFootApp" class="h-16 mx-auto mb-4">
             <p class="text-gray-600">Admin Panel Login</p>
         </div>
 
@@ -31,7 +43,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" name="email" required
                            class="w-full border border-gray-300 rounded px-3 py-2"
-                           placeholder="admin@ramjapp.com">
+                           placeholder="admin@medfootapp.com">
                 </div>
 
                 <div class="mb-6">
@@ -42,7 +54,7 @@
                 </div>
 
                 <button type="submit"
-                        class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                        class="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark">
                     Login
                 </button>
             </form>

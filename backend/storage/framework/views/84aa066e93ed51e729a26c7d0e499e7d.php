@@ -7,7 +7,7 @@
             <p class="text-gray-600">Manage medical products</p>
         </div>
         <a href="<?php echo e(route('admin.products.create')); ?>"
-           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+           class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
             + Add Product
         </a>
     </div>
@@ -31,7 +31,7 @@
                     <option value="inactive" <?php echo e(request('status') == 'inactive' ? 'selected' : ''); ?>>Inactive</option>
                 </select>
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
                 Filter
             </button>
         </form>
@@ -79,8 +79,8 @@
                             <?php endif; ?>
                         </td>
                         <td class="px-6 py-4">
-                            <a href="<?php echo e(route('admin.products.edit', $product->id)); ?>"
-                               class="text-blue-600 hover:underline text-sm mr-3">Edit</a>
+                             <a href="<?php echo e(route('admin.products.edit', $product->id)); ?>"
+                                class="text-primary hover:underline text-sm mr-3">Edit</a>
                             <form method="POST" action="<?php echo e(route('admin.products.destroy', $product->id)); ?>"
                                   class="inline" onsubmit="return confirm('Delete this product?')">
                                 <?php echo csrf_field(); ?>

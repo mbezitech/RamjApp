@@ -100,4 +100,11 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<Map<String, dynamic>> forgotPassword(String email) async {
+    final response = await _apiService.post('/forgot-password', {
+      'email': email,
+    });
+    return response;
+  }
 }

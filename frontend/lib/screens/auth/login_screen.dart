@@ -60,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -68,12 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                 const SizedBox(height: 60),
-                 Image.asset(
-                   'assets/images/logo.png',
-                   height: 80,
-                 ),
-                 const SizedBox(height: 16),
+                const SizedBox(height: 60),
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 80,
+                ),
+                const SizedBox(height: 16),
                 Text(
                   AppConstants.appName,
                   textAlign: TextAlign.center,
@@ -90,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: AppColors.textLight,
                       ),
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 32),
                 if (_error != null)
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -107,10 +108,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
-                    prefixIcon: Icon(Icons.email),
-                    border: OutlineInputBorder(),
+                    hintText: 'Enter your email',
+                    prefixIcon: const Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -128,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    hintText: 'Enter your password',
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -141,7 +148,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       },
                     ),
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -172,6 +183,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Login',
                           style: TextStyle(fontSize: 16),
                         ),
+                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ForgotPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('Forgot Password?'),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(

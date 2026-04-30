@@ -6,8 +6,8 @@
             <h1 class="text-2xl font-bold text-gray-800">Pending Verifications</h1>
             <p class="text-gray-600">Review business verification documents</p>
         </div>
-        <a href="<?php echo e(route('admin.documents.all')); ?>"
-           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+         <a href="<?php echo e(route('admin.documents.all')); ?>"
+            class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
             View All Documents
         </a>
     </div>
@@ -34,10 +34,10 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                    <?php echo e(strtoupper($doc->document_type)); ?>
+                                 <span class="px-2 py-1 text-xs rounded-full bg-primary-bg text-primary-text">
+                                     <?php echo e(strtoupper($doc->document_type)); ?>
 
-                                </span>
+                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">
                                 <?php echo e($doc->created_at->format('M d, Y')); ?>

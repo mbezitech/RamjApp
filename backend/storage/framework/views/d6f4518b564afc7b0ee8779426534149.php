@@ -14,13 +14,13 @@
                     <p class="text-sm text-gray-600">Total Users</p>
                     <p class="text-3xl font-bold text-gray-800"><?php echo e($stats['total_users']); ?></p>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-full">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-primary-bg p-3 rounded-full">
+                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                 </div>
             </div>
-            <a href="<?php echo e(route('admin.users.index')); ?>" class="text-sm text-blue-600 hover:underline mt-2 block">View all users →</a>
+            <a href="<?php echo e(route('admin.users.index')); ?>" class="text-sm text-primary hover:underline mt-2 block">View all users →</a>
         </div>
 
         <div class="bg-white rounded-lg shadow p-6">
@@ -50,7 +50,7 @@
                     </svg>
                 </div>
             </div>
-            <a href="<?php echo e(route('admin.products.index')); ?>" class="text-sm text-purple-600 hover:underline mt-2 block">Manage products →</a>
+            <a href="<?php echo e(route('admin.products.index')); ?>" class="text-sm text-primary hover:underline mt-2 block">Manage products →</a>
         </div>
 
         <div class="bg-white rounded-lg shadow p-6">
@@ -66,7 +66,7 @@
                     </svg>
                 </div>
             </div>
-            <a href="<?php echo e(route('admin.orders.index')); ?>" class="text-sm text-orange-600 hover:underline mt-2 block">View all orders →</a>
+            <a href="<?php echo e(route('admin.orders.index')); ?>" class="text-sm text-primary hover:underline mt-2 block">View all orders →</a>
         </div>
     </div>
 
@@ -85,10 +85,10 @@
                                 <p class="text-sm text-gray-600"><?php echo e(strtoupper($doc->document_type)); ?> Certificate</p>
                                 <p class="text-xs text-gray-500"><?php echo e($doc->created_at->diffForHumans()); ?></p>
                             </div>
-                            <a href="<?php echo e(route('admin.documents.review', $doc->id)); ?>"
-                               class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                                Review
-                            </a>
+                             <a href="<?php echo e(route('admin.documents.review', $doc->id)); ?>"
+                                class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-primary-dark">
+                                 Review
+                             </a>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <?php else: ?>
@@ -111,15 +111,15 @@
                                 <p class="text-sm text-gray-600"><?php echo e($order->user->name); ?></p>
                                 <p class="text-xs text-gray-500">TZS <?php echo e(number_format($order->total_amount, 0)); ?></p>
                             </div>
-                            <span class="px-2 py-1 text-xs rounded-full
-                                <?php if($order->status == 'delivered'): ?> bg-green-100 text-green-800
-                                <?php elseif($order->status == 'cancelled'): ?> bg-red-100 text-red-800
-                                <?php elseif($order->status == 'shipped'): ?> bg-blue-100 text-blue-800
-                                <?php elseif($order->status == 'processing'): ?> bg-yellow-100 text-yellow-800
-                                <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
-                                <?php echo e(ucfirst($order->status)); ?>
+                             <span class="px-2 py-1 text-xs rounded-full
+                                 <?php if($order->status == 'delivered'): ?> bg-green-100 text-green-800
+                                 <?php elseif($order->status == 'cancelled'): ?> bg-red-100 text-red-800
+                                 <?php elseif($order->status == 'shipped'): ?> bg-primary-bg text-primary-text
+                                 <?php elseif($order->status == 'processing'): ?> bg-yellow-100 text-yellow-800
+                                 <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
+                                 <?php echo e(ucfirst($order->status)); ?>
 
-                            </span>
+                             </span>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <?php else: ?>
