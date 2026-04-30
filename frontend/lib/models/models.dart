@@ -99,13 +99,13 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'],
-      orderNumber: json['order_number'],
-      status: json['status'],
+      id: json['id'] ?? 0,
+      orderNumber: json['order_number'] ?? '',
+      status: json['status'] ?? 'pending',
       totalAmount: _parseDouble(json['total_amount']),
-      shippingAddress: json['shipping_address'],
+      shippingAddress: json['shipping_address'] ?? '',
       paymentMethod: json['payment_method'],
-      paymentStatus: json['payment_status'],
+      paymentStatus: json['payment_status'] ?? 'pending',
       items: (json['items'] as List?)
               ?.map((item) => OrderItem.fromJson(item))
               .toList() ??
@@ -131,10 +131,20 @@ class OrderItem {
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
+    final productJson = json['product'];
     return OrderItem(
-      id: json['id'],
-      product: Product.fromJson(json['product']),
-      quantity: json['quantity'],
+      id: json['id'] ?? 0,
+      product: productJson != null
+          ? Product.fromJson(productJson)
+          : Product(
+              id: 0,
+              name: 'Unknown Product',
+              category: 'equipment',
+              price: 0,
+              stock: 0,
+              requiresVerification: false,
+            ),
+      quantity: json['quantity'] ?? 0,
       unitPrice: _parseDouble(json['unit_price']),
       subtotal: _parseDouble(json['subtotal']),
     );
