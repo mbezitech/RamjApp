@@ -4,14 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Panel') - MedFootApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#c74454',
+                        'primary-dark': '#8b2e3a',
+                        'primary-bg': '#fce4e8',
+                        'primary-text': '#c74454',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f3f4f6; }
-        .sidebar { position: fixed; top: 0; left: 0; width: 256px; height: 100vh; background: #c74454; color: white; }
-        .sidebar a { display: flex; align-items: center; padding: 12px 24px; color: white; text-decoration: none; font-size: 14px; }
+        body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 256px; height: 100vh; background: #c74454; color: white; overflow-y: auto; }
+        .sidebar a { display: flex; align-items: center; padding: 12px 24px; color: white; text-decoration: none; font-size: 14px; transition: background 0.2s; }
         .sidebar a:hover { background: #8b2e3a; }
         .sidebar svg { width: 20px; height: 20px; margin-right: 12px; stroke: white; fill: none; flex-shrink: 0; }
-        .main { margin-left: 256px; padding: 32px; }
+        .main { margin-left: 256px; padding: 32px; min-height: 100vh; }
         .alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; }
         .alert-success { background: #dcfce7; border: 1px solid #4ade80; color: #15803d; }
         .alert-error { background: #fee2e2; border: 1px solid #f87171; color: #b91c1c; }
@@ -19,12 +34,12 @@
     </style>
 </head>
 <body>
-    <div>
+    <div style="display: flex; min-height: 100vh;">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div style="padding: 24px; border-bottom: 1px solid #8b2e3a;">
                 <div style="background: white; padding: 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">
-                    <img src="{{ asset('logo.png') }}" alt="MedFootApp" style="height: 40px; display: block;" onerror="this.parentElement.style.background='#ffffff'; this.alt='MedFootApp';">
+                    <img src="{{ asset('logo.png') }}" alt="MedFootApp" style="height: 40px; display: block;" onerror="this.parentElement.style.background='#ffffff';">
                 </div>
                 <p style="font-size: 13px; color: white; margin: 8px 0 0 0;">Admin Panel</p>
             </div>
