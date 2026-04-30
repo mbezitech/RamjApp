@@ -17,5 +17,5 @@ class AppColors {
 
 class AppConstants {
   static const String appName = 'MedFootApp';
-  static const String apiBaseUrl = 'https://medfoot.ramjlimited.com/RamjApp/backend/public/api';
+  static const String apiBaseUrl = 'https://medfoot.ramjlimited.com/RamjApp/backend/public/index.php/api';
 }
