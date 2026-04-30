@@ -44,6 +44,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
+    print('OrdersScreen initialized');
     _loadOrders();
   }
 
@@ -63,13 +64,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Future<void> _loadOrders() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-      _isSearching = true;
-    });
-
+    print('=== _loadOrders called ===');
     try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
       final queryParams = <String, String>{
         'status': _statusFilter,
         'payment_status': _paymentFilter,
@@ -79,24 +80,63 @@ class _OrdersScreenState extends State<OrdersScreen> {
         queryParams['search'] = _searchQuery;
       }
 
+      print('Calling API: /orders with params: $queryParams');
+      
       final response = await _apiService.get('/orders', queryParams: queryParams);
+      print('API Response received: ${response.keys.toList()}');
+      
+      if (!mounted) return;
+
+      final ordersData = response['orders'];
+      print('Orders field type: ${ordersData.runtimeType}');
+      
+      if (ordersData == null) {
+        print('Orders field is NULL!');
+        setState(() {
+          _error = 'No orders field in response';
+          _orders = [];
+          _isLoading = false;
+        });
+        return;
+      }
+
+      if (ordersData is! List) {
+        print('Orders is not a list: ${ordersData.toString()}');
+        setState(() {
+          _error = 'Invalid orders format';
+          _orders = [];
+          _isLoading = false;
+        });
+        return;
+      }
+
+      print('Orders count: ${(ordersData as List).length}');
+
+      final parsedOrders = <Order>[];
+      for (int i = 0; i < ordersData.length; i++) {
+        try {
+          final o = ordersData[i];
+          print('Parsing order $i: $o');
+          parsedOrders.add(Order.fromJson(o as Map<String, dynamic>));
+        } catch (e, stack) {
+          print('Error parsing order $i: $e');
+          print('Stack: $stack');
+        }
+      }
+
+      print('Successfully parsed ${parsedOrders.length} orders');
 
       setState(() {
-        final ordersList = response['orders'];
-        if (ordersList is List) {
-          _orders = ordersList.map((o) => Order.fromJson(o)).toList();
-        } else {
-          _orders = [];
-          _error = 'Invalid response format';
-        }
+        _orders = parsedOrders;
         _isLoading = false;
-        _isSearching = false;
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('Exception in _loadOrders: $e');
+      print('Stack: $stackTrace');
+      if (!mounted) return;
       setState(() {
-        _error = e.toString().replaceFirst('ApiException: ', '');
+        _error = 'Error: ${e.toString()}';
         _isLoading = false;
-        _isSearching = false;
         _orders = [];
       });
     }

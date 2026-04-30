@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
+import 'reset_password_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -36,14 +37,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         _emailController.text.trim(),
       );
 
-      setState(() {
-        _isSuccess = true;
-        _message = result['message'] ?? 'Password reset instructions sent';
-      });
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ResetPasswordScreen(
+              email: _emailController.text.trim(),
+            ),
+          ),
+        );
+      }
     } catch (e) {
       setState(() {
         _isSuccess = false;
-        _message = e.toString().replaceFirst('ApiException: ', '');
+        String msg = e.toString().replaceFirst('ApiException: ', '');
+        if (msg.contains('(Status:')) {
+          msg = msg.substring(0, msg.indexOf('(Status:')).trim();
+        }
+        _message = msg;
       });
     } finally {
       if (mounted) {
@@ -100,24 +110,48 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ? AppColors.success.withOpacity(0.1)
                           : AppColors.error.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      _message!,
-                      style: TextStyle(
+                      border: Border.all(
                         color: _isSuccess
-                            ? AppColors.success
-                            : AppColors.error,
+                            ? AppColors.success.withOpacity(0.3)
+                            : AppColors.error.withOpacity(0.3),
                       ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          _isSuccess ? Icons.check_circle : Icons.error_outline,
+                          color: _isSuccess
+                              ? AppColors.success
+                              : AppColors.error,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _message!,
+                            style: TextStyle(
+                              color: _isSuccess
+                                  ? AppColors.success
+                                  : AppColors.error,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 if (_message != null) const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
-                    prefixIcon: Icon(Icons.email),
-                    border: OutlineInputBorder(),
+                    hintText: 'Enter your registered email',
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -136,27 +170,32 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
                   ),
                   child: _isLoading
                       ? const SizedBox(
-                          height: 20,
-                          width: 20,
+                          height: 22,
+                          width: 22,
                           child: CircularProgressIndicator(
-                            strokeWidth: 2,
+                            strokeWidth: 2.5,
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text(
                           'Send Reset Link',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Back to Login'),
                 ),
               ],

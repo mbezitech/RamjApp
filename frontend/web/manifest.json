@@ -3,7 +3,7 @@
     "short_name": "MedFootApp",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#c74454",
+    "background_color": "#FFFFFF",
     "theme_color": "#c74454",
     "description": "B2B/B2C Medical Supply Platform",
     "orientation": "portrait-primary",

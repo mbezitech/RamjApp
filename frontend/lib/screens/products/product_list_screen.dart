@@ -381,7 +381,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 12,
                                 mainAxisSpacing: 12,
-                                childAspectRatio: 0.7,
+                                childAspectRatio: 0.65,
                               ),
                               itemCount: _products.length,
                               itemBuilder: (context, index) {
@@ -748,7 +748,7 @@ class _ProductCard extends StatelessWidget {
                   if (product.imageUrl != null)
                     CachedNetworkImage(
                       imageUrl: product.imageUrl!,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       width: double.infinity,
                       placeholder: (context, url) =>
                           const Center(child: CircularProgressIndicator()),

@@ -59,10 +59,10 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Unknown',
       description: json['description'],
-      category: json['category'],
+      category: json['category'] ?? 'equipment',
       price: _parseDouble(json['price']),
       stock: json['stock'] ?? 0,
       imageUrl: json['image_url'],
@@ -131,19 +131,10 @@ class OrderItem {
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
-    final productJson = json['product'];
+    final productJson = json['product'] as Map<String, dynamic>?;
     return OrderItem(
       id: json['id'] ?? 0,
-      product: productJson != null
-          ? Product.fromJson(productJson)
-          : Product(
-              id: 0,
-              name: 'Unknown Product',
-              category: 'equipment',
-              price: 0,
-              stock: 0,
-              requiresVerification: false,
-            ),
+      product: Product.fromJson(productJson ?? {}),
       quantity: json['quantity'] ?? 0,
       unitPrice: _parseDouble(json['unit_price']),
       subtotal: _parseDouble(json['subtotal']),

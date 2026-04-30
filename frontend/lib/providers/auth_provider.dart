@@ -111,4 +111,18 @@ class AuthProvider extends ChangeNotifier {
     });
     return response;
   }
+
+  Future<void> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    await _apiService.post('/reset-password', {
+      'email': email,
+      'token': token,
+      'password': password,
+      'password_confirmation': passwordConfirmation,
+    });
+  }
 }
