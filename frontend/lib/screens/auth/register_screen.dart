@@ -51,14 +51,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             password: _passwordController.text,
             passwordConfirmation: _confirmPasswordController.text,
             role: _role,
-            phone: _phoneController.text.trim().isEmpty
-                ? null
-                : _phoneController.text.trim(),
-            businessName: _role == 'business'
-                ? _businessNameController.text.trim()
-                : null,
-            businessType:
-                _role == 'business' ? _businessType : null,
+            phone: _phoneController.text.trim(),
+            businessName: _businessNameController.text.trim(),
+            businessType: _businessType,
           );
 
       if (mounted) {
@@ -69,7 +64,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } catch (e) {
       setState(() {
-        _error = e.toString().replaceFirst('ApiException: ', '');
+        String errorMsg = e.toString();
+        if (errorMsg.contains('ApiException: ')) {
+          errorMsg = errorMsg.replaceFirst('ApiException: ', '');
+        }
+        if (errorMsg.contains('(Status:')) {
+          errorMsg = errorMsg.substring(0, errorMsg.indexOf('(Status:')).trim();
+        }
+        _error = errorMsg;
       });
     } finally {
       if (mounted) {

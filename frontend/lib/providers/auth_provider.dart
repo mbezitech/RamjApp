@@ -55,25 +55,29 @@ class AuthProvider extends ChangeNotifier {
     String? businessName,
     String? businessType,
   }) async {
-    final response = await _apiService.post('/register', {
-      'name': name,
-      'email': email,
-      'password': password,
-      'password_confirmation': passwordConfirmation,
-      'role': role,
-      if (phone != null) 'phone': phone,
-      if (businessName != null) 'business_name': businessName,
-      if (businessType != null) 'business_type': businessType,
-    });
+    try {
+      final response = await _apiService.post('/register', {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+        'role': role,
+        if (phone != null && phone.isNotEmpty) 'phone': phone,
+        if (businessName != null && businessName.isNotEmpty) 'business_name': businessName,
+        if (businessType != null) 'business_type': businessType,
+      });
 
-    _apiService.token = response['token'];
-    _user = User.fromJson(response['user']);
-    _isAuthenticated = true;
+      _apiService.token = response['token'];
+      _user = User.fromJson(response['user']);
+      _isAuthenticated = true;
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', response['token']);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response['token']);
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> logout() async {
