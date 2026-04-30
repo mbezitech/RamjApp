@@ -137,7 +137,7 @@ class ProfileScreen extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.info_outline),
                   title: const Text('About'),
-                  subtitle: const Text('RamjApp Medical v1.0.0'),
+                  subtitle: Text('${AppConstants.appName} v1.0.0'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {},
                 ),

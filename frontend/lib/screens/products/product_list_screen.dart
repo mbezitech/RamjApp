@@ -71,7 +71,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RamjApp Medical'),
+        title: Text(AppConstants.appName),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         actions: [
@@ -139,7 +139,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   Expanded(
                     child: Text(
                       'Account pending verification. Upload TMDA & TRA documents to access medicines.',
-                      style: TextStyle(color: AppColors.warning.shade800),
+                      style: TextStyle(color: AppColors.warning),
                     ),
                   ),
                   TextButton(
@@ -413,7 +413,7 @@ class _PlaceholderImage extends StatelessWidget {
     return Container(
       color: AppColors.primary.withOpacity(0.1),
       child: Center(
-        Icon(
+        child: Icon(
           product.isMedicine ? Icons.medication : Icons.medical_services,
           size: 48,
           color: AppColors.primary,
