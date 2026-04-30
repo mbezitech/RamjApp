@@ -6,8 +6,13 @@ import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
+  final String? token;
 
-  const ResetPasswordScreen({super.key, required this.email});
+  const ResetPasswordScreen({
+    super.key,
+    required this.email,
+    this.token,
+  });
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -24,6 +29,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _isSuccess = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.token != null) {
+      _tokenController.text = widget.token!;
+    }
+  }
 
   @override
   void dispose() {
@@ -49,33 +62,34 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             passwordConfirmation: _confirmPasswordController.text,
           );
 
+      if (!mounted) return;
+
+      setState(() {
+        _isSuccess = true;
+        _message = 'Password reset successfully!';
+      });
+
+      await Future.delayed(const Duration(seconds: 1));
+
       if (mounted) {
-        setState(() {
-          _isSuccess = true;
-          _message = 'Password reset successfully!';
-        });
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
-              (route) => false,
-            );
-          }
-        });
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          (route) => false,
+        );
       }
     } catch (e) {
+      if (!mounted) return;
+
+      String msg = e.toString().replaceFirst('ApiException: ', '');
+      if (msg.contains('(Status:')) {
+        msg = msg.substring(0, msg.indexOf('(Status:')).trim();
+      }
+
       setState(() {
         _isSuccess = false;
-        String msg = e.toString().replaceFirst('ApiException: ', '');
-        if (msg.contains('(Status:')) {
-          msg = msg.substring(0, msg.indexOf('(Status:')).trim();
-        }
         _message = msg;
+        _isLoading = false;
       });
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
     }
   }
 
@@ -96,14 +110,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 20),
-                Icon(
-                  Icons.lock_reset,
-                  size: 80,
-                  color: AppColors.primary,
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.lock_reset,
+                    size: 40,
+                    color: AppColors.primary,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Enter Reset Details',
+                  'Reset Password',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.primary,
@@ -112,20 +134,37 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Enter the token from your email and choose a new password.',
+                  'Enter the reset code and set a new password.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textLight,
                       ),
                 ),
-                const SizedBox(height: 24),
-                Text(
-                  'Email: ${widget.email}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.email_outlined,
+                          size: 16, color: AppColors.primary),
+                      const SizedBox(width: 6),
+                      Text(
+                        widget.email,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -146,10 +185,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     child: Row(
                       children: [
                         Icon(
-                          _isSuccess ? Icons.check_circle : Icons.error_outline,
+                          _isSuccess
+                              ? Icons.check_circle
+                              : Icons.error_outline,
                           color: _isSuccess
                               ? AppColors.success
                               : AppColors.error,
+                          size: 20,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -169,9 +211,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 TextFormField(
                   controller: _tokenController,
                   keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.characters,
                   decoration: InputDecoration(
-                    labelText: 'Reset Token',
-                    hintText: 'Enter the token from your email',
+                    labelText: 'Reset Code',
+                    hintText: 'Enter the code from your email',
                     prefixIcon: const Icon(Icons.key),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -181,7 +224,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the reset token';
+                      return 'Please enter the reset code';
                     }
                     return null;
                   },
