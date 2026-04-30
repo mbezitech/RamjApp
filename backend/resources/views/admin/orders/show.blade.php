@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-6">
-        <a href="{{ route('admin.orders.index') }}" class="text-blue-600 hover:underline">← Back to Orders</a>
+        <a href="{{ route('admin.orders.index') }}" class="text-primary hover:underline">← Back to Orders</a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -25,9 +25,9 @@
                             <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
                             <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>
-                        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
-                            Update
-                        </button>
+                         <button type="submit" class="bg-primary text-white px-3 py-1 rounded text-sm">
+                             Update
+                         </button>
                     </form>
                 </div>
 

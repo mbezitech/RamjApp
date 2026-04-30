@@ -26,7 +26,7 @@
                     <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                 </select>
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <button type="submit" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark">
                 Filter
             </button>
         </form>
@@ -54,9 +54,9 @@
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                {{ strtoupper($doc->document_type) }}
-                            </span>
+                             <span class="px-2 py-1 text-xs rounded-full bg-primary-bg text-primary-text">
+                                 {{ strtoupper($doc->document_type) }}
+                             </span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="px-2 py-1 text-xs rounded-full
@@ -68,10 +68,10 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $doc->created_at->format('M d, Y') }}</td>
                         <td class="px-6 py-4">
-                            <a href="{{ route('admin.documents.review', $doc->id) }}"
-                               class="text-blue-600 hover:underline text-sm">
-                                @if($doc->status == 'pending') Review @else View @endif
-                            </a>
+                             <a href="{{ route('admin.documents.review', $doc->id) }}"
+                                class="text-primary hover:underline text-sm">
+                                 @if($doc->status == 'pending') Review @else View @endif
+                             </a>
                         </td>
                     </tr>
                 @endforeach

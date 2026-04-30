@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-6">
-        <a href="{{ route('admin.documents.pending') }}" class="text-blue-600 hover:underline">← Back to Pending</a>
+        <a href="{{ route('admin.documents.pending') }}" class="text-primary hover:underline">← Back to Pending</a>
     </div>
 
     <div class="max-w-2xl">
@@ -35,8 +35,8 @@
                 <p class="text-sm text-gray-600 mb-2">Document Preview:</p>
                 <a href="{{ asset('storage/' . $document->file_path) }}"
                    target="_blank"
-                   class="text-blue-600 hover:underline">
-                    View Document →
+                    class="text-primary hover:underline">
+                     View Document →
                 </a>
             </div>
 

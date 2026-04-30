@@ -42,7 +42,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   : Container(
                       color: AppColors.primary.withOpacity(0.1),
                       child: Center(
-                        Icon(
+                        child: Icon(
                           widget.product.isMedicine
                               ? Icons.medication
                               : Icons.medical_services,

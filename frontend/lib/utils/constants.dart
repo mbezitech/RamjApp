@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const primary = Color(0xFF00695C);
-  static const primaryLight = Color(0xFF439889);
-  static const primaryDark = Color(0xFF003D33);
+  static const primary = Color(0xFFc74454);
+  static const primaryLight = Color(0xFFd46a6a);
+  static const primaryDark = Color(0xFF8b2e3a);
   static const secondary = Color(0xFF00BFA5);
   static const accent = Color(0xFFFF6F00);
   static const background = Color(0xFFF5F5F5);
@@ -16,6 +16,6 @@ class AppColors {
 }
 
 class AppConstants {
-  static const String appName = 'RamjApp Medical';
-  static const String apiBaseUrl = 'http://localhost:8000/api';
+  static const String appName = 'MedFootApp';
+  static const String apiBaseUrl = 'http://192.168.0.12:8000/api';
 }

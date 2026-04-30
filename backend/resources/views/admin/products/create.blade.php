@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-6">
-        <a href="{{ route('admin.products.index') }}" class="text-blue-600 hover:underline">← Back to Products</a>
+        <a href="{{ route('admin.products.index') }}" class="text-primary hover:underline">← Back to Products</a>
     </div>
 
     <div class="max-w-2xl">
@@ -56,12 +56,12 @@
                 <div class="mb-6">
                     <label class="flex items-center">
                         <input type="checkbox" name="is_active" value="1" checked
-                               class="rounded border-gray-300 text-blue-600">
+                               class="rounded border-gray-300 text-primary">
                         <span class="ml-2">Active</span>
                     </label>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                <button type="submit" class="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark">
                     Create Product
                 </button>
             </form>

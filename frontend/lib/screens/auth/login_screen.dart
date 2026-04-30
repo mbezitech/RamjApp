@@ -68,15 +68,14 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 60),
-                Icon(
-                  Icons.medical_services,
-                  size: 80,
-                  color: AppColors.primary,
-                ),
-                const SizedBox(height: 16),
+                 const SizedBox(height: 60),
+                 Image.asset(
+                   'assets/images/logo.png',
+                   height: 80,
+                 ),
+                 const SizedBox(height: 16),
                 Text(
-                  'RamjApp Medical',
+                  AppConstants.appName,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: AppColors.primary,

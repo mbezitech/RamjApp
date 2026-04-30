@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="mb-6">
-        <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:underline">← Back to Users</a>
+        <a href="{{ route('admin.users.index') }}" class="text-primary hover:underline">← Back to Users</a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -12,7 +12,7 @@
         <div class="lg:col-span-1">
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="text-center mb-6">
-                    <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                         <span class="text-2xl text-white font-bold">{{ substr($user->name, 0, 1) }}</span>
                     </div>
                     <h2 class="text-xl font-bold">{{ $user->name }}</h2>
