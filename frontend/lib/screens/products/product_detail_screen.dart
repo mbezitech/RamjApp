@@ -26,38 +26,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         title: Text(widget.product.name),
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 250,
+            Container(
+              height: 300,
               width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.05),
+                border: Border(
+                  bottom: BorderSide(
+                    color: AppColors.primary.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+              ),
               child: widget.product.imageUrl != null
                   ? CachedNetworkImage(
                       imageUrl: widget.product.imageUrl!,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     )
-                  : Container(
-                      color: AppColors.primary.withOpacity(0.1),
-                      child: Center(
-                        child: Icon(
-                          widget.product.isMedicine
-                              ? Icons.medication
-                              : Icons.medical_services,
-                          size: 80,
-                          color: AppColors.primary,
-                        ),
+                  : Center(
+                      child: Icon(
+                        widget.product.isMedicine
+                            ? Icons.medication
+                            : Icons.medical_services,
+                        size: 100,
+                        color: AppColors.primary.withOpacity(0.5),
                       ),
                     ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
@@ -68,107 +76,144 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   ),
                         ),
                       ),
-                      if (widget.product.requiresVerification)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.accent,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Text(
-                            'Business Only',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: widget.product.isMedicine
+                              ? AppColors.accent
+                              : AppColors.secondary,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          widget.product.isMedicine ? 'Medicine' : 'Equipment',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+                      ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'TZS ${widget.product.price.toStringAsFixed(0)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.inventory_2,
+                            size: 18,
+                            color: widget.product.stock > 0
+                                ? AppColors.success
+                                : AppColors.error,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.product.stock > 0
+                                ? '${widget.product.stock} in stock'
+                                : 'Out of Stock',
+                            style: TextStyle(
+                              color: widget.product.stock > 0
+                                  ? AppColors.success
+                                  : AppColors.error,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Description',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'TZS ${widget.product.price.toStringAsFixed(0)}',
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
                     widget.product.description ?? 'No description available',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.inventory_2,
-                        size: 20,
-                        color: widget.product.stock > 0
-                            ? AppColors.success
-                            : AppColors.error,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        widget.product.stock > 0
-                            ? 'In Stock (${widget.product.stock} available)'
-                            : 'Out of Stock',
-                        style: TextStyle(
-                          color: widget.product.stock > 0
-                              ? AppColors.success
-                              : AppColors.error,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: AppColors.textLight,
                         ),
-                      ),
-                    ],
                   ),
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Text(
-                        'Quantity:',
-                        style: Theme.of(context).textTheme.titleMedium,
+                  if (widget.product.stock > 0) ...[
+                    Text(
+                      'Quantity',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
                       ),
-                      const SizedBox(width: 16),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: _quantity > 1
-                                  ? () => setState(() => _quantity--)
-                                  : null,
-                            ),
-                            SizedBox(
-                              width: 40,
-                              child: Text(
-                                '$_quantity',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove),
+                            onPressed: _quantity > 1
+                                ? () => setState(() => _quantity--)
+                                : null,
+                            color: AppColors.primary,
+                          ),
+                          Container(
+                            width: 50,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              border: Border.symmetric(
+                                vertical: BorderSide(color: Colors.grey.shade300),
                               ),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: _quantity < widget.product.stock
-                                  ? () => setState(() => _quantity++)
-                                  : null,
+                            child: Text(
+                              '$_quantity',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: _quantity < widget.product.stock
+                                ? () => setState(() => _quantity++)
+                                : null,
+                            color: AppColors.primary,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ],
               ),
             ),
