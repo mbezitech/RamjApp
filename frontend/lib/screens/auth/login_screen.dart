@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
 import 'register_screen.dart';
+import 'forgot_password_screen.dart';
 import '../products/product_list_screen.dart';
 
 class LoginScreen extends StatefulWidget {
