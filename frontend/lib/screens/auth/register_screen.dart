@@ -56,13 +56,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             businessType: _businessType,
           );
 
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const ProductListScreen()),
-          (route) => false,
-        );
-      }
+      if (!mounted) return;
+
+      setState(() => _isLoading = false);
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const ProductListScreen()),
+        (route) => false,
+      );
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         String errorMsg = e.toString();
         if (errorMsg.contains('ApiException: ')) {
@@ -72,12 +76,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           errorMsg = errorMsg.substring(0, errorMsg.indexOf('(Status:')).trim();
         }
         _error = errorMsg.isNotEmpty ? errorMsg : 'Registration failed. Please try again.';
+        _isLoading = false;
       });
-      print('Registration error: $e'); // For debugging
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      print('Registration error: $e');
     }
   }
 
