@@ -71,8 +71,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (errorMsg.contains('(Status:')) {
           errorMsg = errorMsg.substring(0, errorMsg.indexOf('(Status:')).trim();
         }
-        _error = errorMsg;
+        _error = errorMsg.isNotEmpty ? errorMsg : 'Registration failed. Please try again.';
       });
+      print('Registration error: $e'); // For debugging
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
