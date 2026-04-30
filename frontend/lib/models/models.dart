@@ -63,7 +63,7 @@ class Product {
       name: json['name'],
       description: json['description'],
       category: json['category'],
-      price: double.parse(json['price'].toString()),
+      price: _parseDouble(json['price']),
       stock: json['stock'] ?? 0,
       imageUrl: json['image_url'],
       requiresVerification: json['requires_verification'] ?? false,
@@ -102,7 +102,7 @@ class Order {
       id: json['id'],
       orderNumber: json['order_number'],
       status: json['status'],
-      totalAmount: double.parse(json['total_amount'].toString()),
+      totalAmount: _parseDouble(json['total_amount']),
       shippingAddress: json['shipping_address'],
       paymentMethod: json['payment_method'],
       paymentStatus: json['payment_status'],
@@ -110,7 +110,7 @@ class Order {
               ?.map((item) => OrderItem.fromJson(item))
               .toList() ??
           [],
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: _parseDateTime(json['created_at']),
     );
   }
 }
@@ -135,8 +135,8 @@ class OrderItem {
       id: json['id'],
       product: Product.fromJson(json['product']),
       quantity: json['quantity'],
-      unitPrice: double.parse(json['unit_price'].toString()),
-      subtotal: double.parse(json['subtotal'].toString()),
+      unitPrice: _parseDouble(json['unit_price']),
+      subtotal: _parseDouble(json['subtotal']),
     );
   }
 }
@@ -165,9 +165,22 @@ class VerificationDocument {
       status: json['status'],
       reviewNotes: json['review_notes'],
       reviewedAt: json['reviewed_at'] != null
-          ? DateTime.parse(json['reviewed_at'])
+          ? _parseDateTime(json['reviewed_at'])
           : null,
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: _parseDateTime(json['created_at']),
     );
   }
+}
+
+double _parseDouble(dynamic value) {
+  if (value == null) return 0.0;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  return double.tryParse(value.toString()) ?? 0.0;
+}
+
+DateTime _parseDateTime(dynamic value) {
+  if (value == null) return DateTime.now();
+  if (value is DateTime) return value;
+  return DateTime.tryParse(value.toString()) ?? DateTime.now();
 }

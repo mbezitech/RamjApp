@@ -11,13 +11,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@ramjapp.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'is_verified' => true,
-        ]);
+        $this->call(AdminSeeder::class);
 
         User::create([
             'name' => 'Regular Customer',
