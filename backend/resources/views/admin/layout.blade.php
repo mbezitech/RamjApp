@@ -21,61 +21,65 @@
     </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; }
-        .sidebar { position: fixed; top: 0; left: 0; width: 256px; height: 100vh; background: #c74454; color: white; overflow-y: auto; }
-        .sidebar a { display: flex; align-items: center; padding: 12px 24px; color: white; text-decoration: none; font-size: 14px; transition: background 0.2s; }
-        .sidebar a:hover { background: #8b2e3a; }
-        .sidebar svg { width: 20px; height: 20px; margin-right: 12px; stroke: white; fill: none; flex-shrink: 0; }
-        .main { margin-left: 256px; padding: 32px; min-height: 100vh; }
-        .alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; }
-        .alert-success { background: #dcfce7; border: 1px solid #4ade80; color: #15803d; }
-        .alert-error { background: #fee2e2; border: 1px solid #f87171; color: #b91c1c; }
-        .badge { margin-left: auto; background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 999px; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: linear-gradient(180deg, #c74454 0%, #8b2e3a 100%); color: white; overflow-y: auto; z-index: 50; }
+        .sidebar a { display: flex; align-items: center; padding: 12px 24px; color: white; text-decoration: none; font-size: 14px; transition: all 0.2s; border-left: 3px solid transparent; }
+        .sidebar a:hover { background: rgba(255,255,255,0.1); border-left-color: white; }
+        .sidebar a.active { background: rgba(255,255,255,0.15); border-left-color: white; }
+        .sidebar svg { flex-shrink: 0; }
+        .main { margin-left: 260px; padding: 32px; min-height: 100vh; background: #f8fafc; }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; }
+        .alert-success { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
+        .alert-error { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
+        .badge { margin-left: auto; background: #ef4444; color: white; font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
     </style>
 </head>
 <body>
-    <div style="display: flex; min-height: 100vh;">
+    <div class="min-h-screen flex">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div style="padding: 24px; border-bottom: 1px solid #8b2e3a;">
-                <div style="background: white; padding: 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">
-                    <img src="{{ asset('logo.png') }}" alt="MedFootApp" style="height: 40px; display: block;" onerror="this.parentElement.style.background='#ffffff';">
+            <div style="padding: 24px 24px 16px; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <div style="background: white; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <img src="{{ asset('logo.png') }}" alt="MedFootApp" style="height: 36px; display: block;" onerror="this.parentElement.style.background='#ffffff';">
                 </div>
-                <p style="font-size: 13px; color: white; margin: 8px 0 0 0;">Admin Panel</p>
+                <p style="font-size: 12px; color: rgba(255,255,255,0.8); margin: 0; letter-spacing: 0.5px; text-transform: uppercase;">Admin Panel</p>
             </div>
 
-            <nav style="margin-top: 24px;">
-                <a href="{{ route('admin.dashboard') }}">
-                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-4 0h4"/>
+            <nav style="margin-top: 16px; padding: 0 12px;">
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-4 0h4"/>
                     </svg>
                     Dashboard
                 </a>
 
-                <a href="{{ route('admin.users.index') }}">
-                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                     Users
                 </a>
 
-                <a href="{{ route('admin.products.index') }}">
-                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                     </svg>
                     Products
                 </a>
 
-                <a href="{{ route('admin.orders.index') }}">
-                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                     </svg>
                     Orders
                 </a>
 
-                <a href="{{ route('admin.documents.pending') }}">
-                    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                <a href="{{ route('admin.documents.pending') }}" class="{{ request()->routeIs('admin.documents.*') ? 'active' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     Documents
                     @if(isset($pendingDocsCount) && $pendingDocsCount > 0)
@@ -83,19 +87,12 @@
                     @endif
                 </a>
 
-                <div style="border-top: 1px solid #8b2e3a; margin-top: 24px; padding-top: 24px;">
-                    <a href="{{ route('admin.dashboard') }}">
-                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-4 0h4"/>
-                        </svg>
-                        Back to Site
-                    </a>
-
-                    <form method="POST" action="{{ route('logout') }}" style="padding: 12px 24px;">
+                <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 16px; padding-top: 16px;">
+                    <form method="POST" action="{{ route('logout') }}" style="padding: 0 12px;">
                         @csrf
-                        <button type="submit" style="display: flex; align-items: center; background: none; border: none; color: white; cursor: pointer; width: 100%; font-size: 14px;">
-                            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; margin-right: 12px; stroke: white; fill: none;">
-                                <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        <button type="submit" style="display: flex; align-items: center; background: none; border: none; color: white; cursor: pointer; width: 100%; font-size: 14px; padding: 12px 12px; border-radius: 6px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
                             Logout
                         </button>
@@ -108,12 +105,18 @@
         <main class="main">
             @if(session('success'))
                 <div class="alert alert-success">
+                    <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                     {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
                 <div class="alert alert-error">
+                    <svg class="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                     {{ session('error') }}
                 </div>
             @endif
