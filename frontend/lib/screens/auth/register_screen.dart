@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/api_service.dart';
 import '../../utils/constants.dart';
 import '../products/product_list_screen.dart';
 
@@ -76,10 +77,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         errorMsg = 'Registration failed. Please try again.';
       }
 
-      setState(() {
-        _error = errorMsg;
-        _isLoading = false;
-      });
+      if (e is ApiException && e.errors != null) {
+        _showValidationError(e.errors!);
+      } else {
+        setState(() {
+          _error = errorMsg;
+          _isLoading = false;
+        });
+      }
     }
   }
 
