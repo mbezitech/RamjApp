@@ -51,6 +51,7 @@ class Product {
   final int stock;
   final String? imageUrl;
   final bool requiresVerification;
+  final String? sku;
 
   Product({
     required this.id,
@@ -61,6 +62,7 @@ class Product {
     required this.stock,
     this.imageUrl,
     required this.requiresVerification,
+    this.sku,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -73,6 +75,7 @@ class Product {
       stock: json['stock'] ?? 0,
       imageUrl: json['image_url'],
       requiresVerification: json['requires_verification'] ?? false,
+      sku: json['sku'],
     );
   }
 
@@ -90,6 +93,9 @@ class Order {
   final String paymentStatus;
   final List<OrderItem> items;
   final DateTime createdAt;
+  final DateTime? estimatedDelivery;
+  final String? vendorName;
+  final String? vendorDescription;
 
   Order({
     required this.id,
@@ -101,6 +107,9 @@ class Order {
     required this.paymentStatus,
     required this.items,
     required this.createdAt,
+    this.estimatedDelivery,
+    this.vendorName,
+    this.vendorDescription,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -117,6 +126,11 @@ class Order {
               .toList() ??
           [],
       createdAt: _parseDateTime(json['created_at']),
+      estimatedDelivery: json['estimated_delivery'] != null
+          ? _parseDateTime(json['estimated_delivery'])
+          : null,
+      vendorName: json['vendor_name'],
+      vendorDescription: json['vendor_description'],
     );
   }
 }
@@ -127,6 +141,7 @@ class OrderItem {
   final int quantity;
   final double unitPrice;
   final double subtotal;
+  final String? sku;
 
   OrderItem({
     required this.id,
@@ -134,6 +149,7 @@ class OrderItem {
     required this.quantity,
     required this.unitPrice,
     required this.subtotal,
+    this.sku,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
@@ -144,6 +160,7 @@ class OrderItem {
       quantity: json['quantity'] ?? 0,
       unitPrice: _parseDouble(json['unit_price']),
       subtotal: _parseDouble(json['subtotal']),
+      sku: json['sku'],
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../models/models.dart';
 import '../../services/api_service.dart';
 import '../../utils/constants.dart';
+import '../../widgets/app_bottom_nav.dart';
+import 'order_detail_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -18,33 +20,21 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   List<Order> _orders = [];
   bool _isLoading = true;
-  bool _isSearching = false;
   String? _error;
   String _statusFilter = 'all';
-  String _paymentFilter = 'all';
-  String _sortBy = 'newest';
   String _searchQuery = '';
 
   final List<Map<String, String>> _statuses = [
     {'value': 'all', 'label': 'All'},
     {'value': 'pending', 'label': 'Pending'},
-    {'value': 'processing', 'label': 'Processing'},
     {'value': 'shipped', 'label': 'Shipped'},
     {'value': 'delivered', 'label': 'Delivered'},
     {'value': 'cancelled', 'label': 'Cancelled'},
   ];
 
-  final List<Map<String, String>> _paymentStatuses = [
-    {'value': 'all', 'label': 'All'},
-    {'value': 'pending', 'label': 'Pending'},
-    {'value': 'paid', 'label': 'Paid'},
-    {'value': 'failed', 'label': 'Failed'},
-  ];
-
   @override
   void initState() {
     super.initState();
-    print('OrdersScreen initialized');
     _loadOrders();
   }
 
@@ -64,7 +54,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   Future<void> _loadOrders() async {
-    print('=== _loadOrders called ===');
     try {
       setState(() {
         _isLoading = true;
@@ -73,645 +62,526 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
       final queryParams = <String, String>{
         'status': _statusFilter,
-        'payment_status': _paymentFilter,
-        'sort': _sortBy,
       };
       if (_searchQuery.isNotEmpty) {
         queryParams['search'] = _searchQuery;
       }
 
-      print('Calling API: /orders with params: $queryParams');
-      
       final response = await _apiService.get('/orders', queryParams: queryParams);
-      print('API Response received: ${response.keys.toList()}');
-      
       if (!mounted) return;
 
       final ordersData = response['orders'];
-      print('Orders field type: ${ordersData.runtimeType}');
-      
-      if (ordersData == null) {
-        print('Orders field is NULL!');
+      if (ordersData == null || ordersData is! List) {
         setState(() {
-          _error = 'No orders field in response';
+          _error = 'Invalid response';
           _orders = [];
           _isLoading = false;
         });
         return;
       }
-
-      if (ordersData is! List) {
-        print('Orders is not a list: ${ordersData.toString()}');
-        setState(() {
-          _error = 'Invalid orders format';
-          _orders = [];
-          _isLoading = false;
-        });
-        return;
-      }
-
-      print('Orders count: ${(ordersData as List).length}');
 
       final parsedOrders = <Order>[];
-      for (int i = 0; i < ordersData.length; i++) {
+      for (final o in ordersData) {
         try {
-          final o = ordersData[i];
-          print('Parsing order $i: $o');
           parsedOrders.add(Order.fromJson(o as Map<String, dynamic>));
-        } catch (e, stack) {
-          print('Error parsing order $i: $e');
-          print('Stack: $stack');
-        }
+        } catch (_) {}
       }
-
-      print('Successfully parsed ${parsedOrders.length} orders');
 
       setState(() {
         _orders = parsedOrders;
         _isLoading = false;
       });
-    } catch (e, stackTrace) {
-      print('Exception in _loadOrders: $e');
-      print('Stack: $stackTrace');
+    } catch (e) {
       if (!mounted) return;
       setState(() {
         _error = 'Error: ${e.toString()}';
         _isLoading = false;
-        _orders = [];
       });
     }
   }
 
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'delivered':
-        return AppColors.success;
-      case 'cancelled':
-        return AppColors.error;
-      case 'shipped':
-        return Colors.blue;
-      case 'processing':
-        return AppColors.warning;
-      case 'pending':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  Color _getPaymentColor(String status) {
-    switch (status) {
-      case 'paid':
-        return AppColors.success;
-      case 'failed':
-        return AppColors.error;
-      default:
-        return AppColors.warning;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final hasActiveFilters = _statusFilter != 'all' || _paymentFilter != 'all' || _searchQuery.isNotEmpty;
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Orders'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: hasActiveFilters ? Colors.yellow : Colors.white),
-            tooltip: 'Filters',
-            onPressed: () => _showFilterSheet(context),
-          ),
-        ],
-      ),
+      backgroundColor: AppColors.background,
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: _onSearchChanged,
-              decoration: InputDecoration(
-                hintText: 'Search orders...',
-                prefixIcon: const Icon(Icons.search, color: AppColors.textLight),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, size: 20),
-                        onPressed: () {
-                          _searchController.clear();
-                          _onSearchChanged('');
-                        },
-                      )
-                    : null,
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: AppColors.primary),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0),
-              ),
-            ),
-          ),
-          if (hasActiveFilters || _isSearching)
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-              child: Row(
-                children: [
-                  Text(
-                    _isLoading ? 'Loading...' : '${_orders.length} order${_orders.length != 1 ? 's' : ''}',
-                    style: TextStyle(
-                      color: AppColors.textLight,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (_statusFilter != 'all')
-                    _FilterBadge(
-                      label: _statuses.firstWhere((s) => s['value'] == _statusFilter)['label']!,
-                      onRemove: () => setState(() => _statusFilter = 'all'),
-                    ),
-                  if (_paymentFilter != 'all')
-                    _FilterBadge(
-                      label: _paymentStatuses.firstWhere((s) => s['value'] == _paymentFilter)['label']!,
-                      onRemove: () => setState(() => _paymentFilter = 'all'),
-                    ),
-                  if (_searchQuery.isNotEmpty)
-                    _FilterBadge(
-                      label: '"$_searchQuery"',
-                      onRemove: () {
-                        _searchController.clear();
-                        _onSearchChanged('');
-                      },
-                    ),
-                ],
-              ),
-            ),
+          _buildAppBar(),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                 : _error != null
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(_error!, style: const TextStyle(color: AppColors.error)),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _loadOrders,
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? _buildError()
                     : _orders.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  hasActiveFilters ? Icons.filter_list_off : Icons.receipt_long,
-                                  size: 64,
-                                  color: AppColors.textLight,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  hasActiveFilters
-                                      ? 'No orders match filters'
-                                      : 'No orders yet',
-                                  style: TextStyle(
-                                    color: AppColors.textLight,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                if (hasActiveFilters) ...[
-                                  const SizedBox(height: 8),
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _statusFilter = 'all';
-                                        _paymentFilter = 'all';
-                                        _searchQuery = '';
-                                        _searchController.clear();
-                                      });
-                                      _loadOrders();
-                                    },
-                                    child: const Text('Clear filters'),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          )
-                        : RefreshIndicator(
-                            onRefresh: _loadOrders,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: _orders.length,
-                              itemBuilder: (context, index) {
-                                final order = _orders[index];
-                                return _OrderCard(
-                                  order: order,
-                                  statusColor: _getStatusColor(order.status),
-                                  statusLabel: _getStatusLabel(order.status),
-                                  paymentColor: _getPaymentColor(order.paymentStatus),
-                                );
-                              },
-                            ),
-                          ),
+                        ? _buildEmpty()
+                        : _buildOrderList(),
           ),
+          const AppBottomNav(currentIndex: 1),
         ],
       ),
     );
   }
 
-  String _getStatusLabel(String status) {
-    return status.toUpperCase().replaceAll('_', ' ');
-  }
-
-  void _showFilterSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Filters',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {
-                          setModalState(() {
-                            _statusFilter = 'all';
-                            _paymentFilter = 'all';
-                            _sortBy = 'newest';
-                          });
-                        },
-                        child: const Text('Reset'),
-                      ),
-                    ],
-                  ),
-                  const Divider(),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Order Status',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _statuses.map((s) {
-                      final selected = _statusFilter == s['value'];
-                      return ChoiceChip(
-                        label: Text(s['label']!),
-                        selected: selected,
-                        selectedColor: s['value'] == 'all'
-                            ? AppColors.primary.withOpacity(0.2)
-                            : _getStatusColor(s['value']!).withOpacity(0.2),
-                        checkmarkColor: _getStatusColor(s['value'] == 'all' ? 'pending' : s['value']!),
-                        onSelected: (_) {
-                          setModalState(() => _statusFilter = s['value']!);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Payment Status',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _paymentStatuses.map((s) {
-                      final selected = _paymentFilter == s['value'];
-                      return ChoiceChip(
-                        label: Text(s['label']!),
-                        selected: selected,
-                        selectedColor: _getPaymentColor(s['value'] == 'all' ? 'pending' : s['value']!).withOpacity(0.2),
-                        onSelected: (_) {
-                          setModalState(() => _paymentFilter = s['value']!);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const Divider(),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Sort By',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  _SortOption(
-                    label: 'Newest First',
-                    value: _sortBy == 'newest',
-                    onTap: () => setModalState(() => _sortBy = 'newest'),
-                  ),
-                  _SortOption(
-                    label: 'Oldest First',
-                    value: _sortBy == 'oldest',
-                    onTap: () => setModalState(() => _sortBy = 'oldest'),
-                  ),
-                  _SortOption(
-                    label: 'Price: High to Low',
-                    value: _sortBy == 'price_high',
-                    onTap: () => setModalState(() => _sortBy = 'price_high'),
-                  ),
-                  _SortOption(
-                    label: 'Price: Low to High',
-                    value: _sortBy == 'price_low',
-                    onTap: () => setModalState(() => _sortBy = 'price_low'),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        setState(() {});
-                        _loadOrders();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('Apply Filters'),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _FilterBadge extends StatelessWidget {
-  final String label;
-  final VoidCallback onRemove;
-
-  const _FilterBadge({required this.label, required this.onRemove});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildAppBar() {
     return Container(
-      margin: const EdgeInsets.only(left: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface,
+        border: Border(
+          bottom: BorderSide(color: AppColors.surfaceVariant),
+        ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 4),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: const Icon(Icons.arrow_back, color: AppColors.primary),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  'Orders',
+                  style: AppTypography.h3.copyWith(color: AppColors.primary),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(Icons.settings, color: AppColors.primary),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 4),
-          GestureDetector(
-            onTap: onRemove,
-            child: const Icon(Icons.close, size: 14, color: AppColors.primary),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            child: _buildSearchBar(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 24, bottom: 12),
+            child: _buildFilterChips(),
           ),
         ],
       ),
     );
   }
-}
 
-class _SortOption extends StatelessWidget {
-  final String label;
-  final bool value;
-  final VoidCallback onTap;
-
-  const _SortOption({
-    required this.label,
-    required this.value,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        value ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-        color: AppColors.primary,
+  Widget _buildSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.outlineVariant),
       ),
-      title: Text(label),
-      onTap: onTap,
+      child: TextField(
+        controller: _searchController,
+        onChanged: _onSearchChanged,
+        style: AppTypography.bodyMd,
+        decoration: InputDecoration(
+          hintText: 'Search by Order ID or product name...',
+          hintStyle: AppTypography.bodyMd.copyWith(color: AppColors.secondary),
+          prefixIcon: const Icon(Icons.search, color: AppColors.secondary),
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, size: 20),
+                  onPressed: () {
+                    _searchController.clear();
+                    _onSearchChanged('');
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+      ),
     );
   }
+
+  Widget _buildFilterChips() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: _statuses.map((status) {
+          final isSelected = _statusFilter == status['value'];
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: GestureDetector(
+              onTap: () {
+                setState(() => _statusFilter = status['value']!);
+                _loadOrders();
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.primary : AppColors.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  status['label']!,
+                  style: AppTypography.labelMd.copyWith(
+                    color: isSelected ? AppColors.onPrimary : AppColors.secondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildOrderList() {
+    final filteredOrders = _statusFilter == 'all'
+        ? _orders
+        : _orders.where((o) => o.status == _statusFilter).toList();
+
+    if (filteredOrders.isEmpty) {
+      return _buildEmpty();
+    }
+
+    return RefreshIndicator(
+      onRefresh: _loadOrders,
+      color: AppColors.primary,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(24),
+        itemCount: filteredOrders.length,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: _OrderCard(order: filteredOrders[index]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmpty() {
+    final hasFiltersOrSearch = _statusFilter != 'all' || _searchQuery.isNotEmpty;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              hasFiltersOrSearch ? Icons.filter_list_off : Icons.receipt_long,
+              size: 64,
+              color: AppColors.textLight,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              hasFiltersOrSearch ? 'No orders match filters' : 'No orders yet',
+              style: AppTypography.bodyMd.copyWith(color: AppColors.textLight),
+            ),
+            if (hasFiltersOrSearch) ...[
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _statusFilter = 'all';
+                    _searchQuery = '';
+                    _searchController.clear();
+                  });
+                  _loadOrders();
+                },
+                child: const Text('Clear filters'),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+            const SizedBox(height: 16),
+            Text(_error!, style: AppTypography.bodyMd.copyWith(color: AppColors.error)),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadOrders,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.onPrimary,
+              ),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
 class _OrderCard extends StatelessWidget {
   final Order order;
-  final Color statusColor;
-  final String statusLabel;
-  final Color paymentColor;
 
-  const _OrderCard({
-    required this.order,
-    required this.statusColor,
-    required this.statusLabel,
-    required this.paymentColor,
-  });
+  const _OrderCard({required this.order});
+
+  String _getStatusLabel() {
+    switch (order.status) {
+      case 'pending':
+        return 'Pending';
+      case 'shipped':
+        return 'Shipped';
+      case 'delivered':
+        return 'Delivered';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return order.status;
+    }
+  }
+
+  Color _getBadgeBg() {
+    switch (order.status) {
+      case 'pending':
+        return AppColors.primaryFixed;
+      case 'shipped':
+        return AppColors.secondaryContainer;
+      case 'cancelled':
+        return AppColors.surfaceVariant;
+      default:
+        return AppColors.surfaceContainerHigh;
+    }
+  }
+
+  Color _getBadgeText() {
+    switch (order.status) {
+      case 'pending':
+        return AppColors.primary;
+      case 'shipped':
+        return AppColors.onSecondaryContainer;
+      default:
+        return AppColors.secondary;
+    }
+  }
+
+  String _getActionLabel() {
+    switch (order.status) {
+      case 'delivered':
+        return 'Reorder';
+      case 'cancelled':
+        return 'View Details';
+      default:
+        return 'Track Order';
+    }
+  }
+
+  bool _isActionEnabled() {
+    return order.status != 'cancelled';
+  }
+
+  String _formatDate(DateTime dt) {
+    final months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    final hour = dt.hour > 12 ? dt.hour - 12 : (dt.hour == 0 ? 12 : dt.hour);
+    final ampm = dt.hour >= 12 ? 'PM' : 'AM';
+    final min = dt.minute.toString().padLeft(2, '0');
+    return '${months[dt.month - 1]} ${dt.day}, ${dt.year} • $hour:$min $ampm';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ExpansionTile(
-        leading: CircleAvatar(
-          backgroundColor: statusColor.withOpacity(0.15),
-          child: Icon(Icons.shopping_bag, color: statusColor, size: 20),
+    final isCancelled = order.status == 'cancelled';
+    final firstItem = order.items.isNotEmpty ? order.items.first : null;
+    final remainingCount = order.items.length - 1;
+
+    return Opacity(
+      opacity: isCancelled ? 0.5 : 1.0,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          border: Border.all(color: AppColors.outlineVariant),
+          borderRadius: BorderRadius.circular(12),
         ),
-        title: Text(
-          order.orderNumber,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'TZS ${order.totalAmount.toStringAsFixed(0)}',
-              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            const SizedBox(height: 2),
-            Row(
-              children: [
-                Text(
-                  '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year}',
-                  style: TextStyle(color: AppColors.textLight, fontSize: 12),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    statusLabel,
-                    style: TextStyle(
-                      color: statusColor,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: paymentColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    order.paymentStatus.toUpperCase(),
-                    style: TextStyle(
-                      color: paymentColor,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Items:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                ),
-                const SizedBox(height: 8),
-                ...order.items.map((item) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(Icons.inventory_2_outlined, size: 20, color: AppColors.primary),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          order.orderNumber.toUpperCase(),
+                          style: AppTypography.labelBold.copyWith(
+                            color: AppColors.secondary,
+                            letterSpacing: 1.5,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _formatDate(order.createdAt),
+                          style: AppTypography.bodySm.copyWith(color: AppColors.secondary),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _getBadgeBg(),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      _getStatusLabel(),
+                      style: AppTypography.labelBold.copyWith(color: _getBadgeText()),
+                    ),
+                  ),
+                ],
+              ),
+              if (firstItem != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: AppColors.surfaceVariant),
+                      bottom: BorderSide(color: AppColors.surfaceVariant),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceVariant,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: firstItem.product.imageUrl != null
+                              ? Image.network(
+                                  firstItem.product.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => _buildPlaceholder(),
+                                )
+                              : _buildPlaceholder(),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Text(
-                                  item.product.name,
-                                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                Flexible(
+                                  child: Text(
+                                    firstItem.product.name,
+                                    style: AppTypography.labelBold.copyWith(color: AppColors.onSurface),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                                Text(
-                                  'Qty: ${item.quantity} × TZS ${item.unitPrice.toStringAsFixed(0)}',
-                                  style: TextStyle(color: AppColors.textLight, fontSize: 12),
-                                ),
+                                if (remainingCount > 0) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryContainer,
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                    child: Text(
+                                      '+$remainingCount',
+                                      style: AppTypography.labelBold.copyWith(
+                                        color: AppColors.onPrimary,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
-                          ),
-                          Text(
-                            'TZS ${item.subtotal.toStringAsFixed(0)}',
-                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
-                          ),
-                        ],
+                            const SizedBox(height: 4),
+                            Text(
+                              'Quantity: ${firstItem.quantity} Unit${firstItem.quantity > 1 ? 's' : ''}',
+                              style: AppTypography.bodySm.copyWith(color: AppColors.secondary),
+                            ),
+                          ],
+                        ),
                       ),
-                    )),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Total',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                    ),
-                    Text(
-                      'TZS ${order.totalAmount.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.location_on_outlined, size: 16, color: AppColors.textLight),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        order.shippingAddress,
-                        style: TextStyle(color: AppColors.textLight, fontSize: 12),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
-            ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Amount',
+                    style: AppTypography.bodySm.copyWith(color: AppColors.secondary),
+                  ),
+                  Text(
+                    '\$${order.totalAmount.toStringAsFixed(2)}',
+                    style: AppTypography.h3.copyWith(
+                      color: isCancelled ? AppColors.secondary : AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: _isActionEnabled()
+                      ? () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => OrderDetailScreen(order: order),
+                            ),
+                          );
+                        }
+                      : null,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    backgroundColor: AppColors.surfaceContainerLow,
+                    foregroundColor: isCancelled ? AppColors.secondary : AppColors.onSurface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: AppColors.outlineVariant),
+                    ),
+                    disabledBackgroundColor: AppColors.surfaceContainerLow,
+                    disabledForegroundColor: AppColors.secondary,
+                  ),
+                  child: Text(
+                    _getActionLabel(),
+                    style: AppTypography.labelBold,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Center(
+      child: Icon(
+        Icons.medical_services,
+        size: 28,
+        color: AppColors.primary.withOpacity(0.3),
       ),
     );
   }

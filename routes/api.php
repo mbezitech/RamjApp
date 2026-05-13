@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice']);
 
     Route::middleware(EnsureVerifiedBusiness::class)->group(function () {
         Route::get('/products/medicines', [ProductController::class, 'index']);

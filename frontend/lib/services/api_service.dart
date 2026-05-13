@@ -73,6 +73,25 @@ class ApiService {
     }
   }
 
+  Future<List<int>> downloadBytes(String endpoint) async {
+    try {
+      final uri = Uri.parse('${AppConstants.apiBaseUrl}$endpoint');
+      final response = await http.get(uri, headers: {
+        'Authorization': 'Bearer $_token',
+        'Accept': 'application/pdf, application/octet-stream',
+      });
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return response.bodyBytes;
+      }
+      throw ApiException(
+        message: 'Download failed',
+        statusCode: response.statusCode,
+      );
+    } on SocketException {
+      throw ApiException(message: 'Check your internet connection', statusCode: 0);
+    }
+  }
+
   Future<Map<String, dynamic>> uploadDocument(String endpoint, Map<String, String> fields, String filePath) async {
     try {
       final uri = Uri.parse('${AppConstants.apiBaseUrl}$endpoint');

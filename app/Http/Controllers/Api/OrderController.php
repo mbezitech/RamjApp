@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -69,6 +70,18 @@ class OrderController extends Controller
         return response()->json([
             'order' => $this->formatOrder($order->load('items.product')),
         ]);
+    }
+
+    public function invoice(Request $request, Order $order)
+    {
+        if ($order->user_id !== $request->user()->id && $request->user()->role !== 'admin') {
+            return response()->json(['message' => 'Access denied'], 403);
+        }
+
+        $order->load('items.product', 'user');
+        $pdf = Pdf::loadView('invoices.default', ['order' => $order]);
+
+        return $pdf->download("invoice_{$order->order_number}.pdf");
     }
 
     public function store(Request $request)

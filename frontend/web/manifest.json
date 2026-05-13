@@ -4,7 +4,7 @@
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FFFFFF",
-    "theme_color": "#c74454",
+    "theme_color": "#93000B",
     "description": "B2B/B2C Medical Supply Platform",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
