@@ -24,6 +24,8 @@ class AuthController extends Controller
             'role' => 'required|in:customer,business',
             'business_name' => 'required_if:role,business|nullable|string|max:255',
             'business_type' => 'required_if:role,business|nullable|in:pharmacy,hospital,clinic,other',
+            'country' => 'nullable|string|max:255',
+            'region' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -44,6 +46,8 @@ class AuthController extends Controller
             'is_verified' => false,
             'business_name' => $validated['business_name'] ?? null,
             'business_type' => $validated['business_type'] ?? null,
+            'country' => $validated['country'] ?? null,
+            'region' => $validated['region'] ?? null,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -148,6 +152,8 @@ class AuthController extends Controller
             'is_verified' => $user->is_verified,
             'business_name' => $user->business_name,
             'business_type' => $user->business_type,
+            'country' => $user->country,
+            'region' => $user->region,
         ];
     }
 }

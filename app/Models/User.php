@@ -20,6 +20,8 @@ class User extends Authenticatable
         'is_verified',
         'business_name',
         'business_type',
+        'country',
+        'region',
     ];
 
     protected $hidden = [

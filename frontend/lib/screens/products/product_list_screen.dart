@@ -146,7 +146,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(
-                      color: AppColors.accent,
+                      color: AppColors.warning,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
@@ -767,7 +767,7 @@ class _ProductCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: product.isMedicine
-                            ? AppColors.accent
+                            ? AppColors.warning
                             : AppColors.secondary,
                         borderRadius: BorderRadius.circular(6),
                       ),

@@ -54,6 +54,8 @@ class AuthProvider extends ChangeNotifier {
     String? phone,
     String? businessName,
     String? businessType,
+    String? country,
+    String? region,
   }) async {
     try {
       final response = await _apiService.post('/register', {
@@ -65,6 +67,8 @@ class AuthProvider extends ChangeNotifier {
         if (phone != null && phone.isNotEmpty) 'phone': phone,
         if (businessName != null && businessName.isNotEmpty) 'business_name': businessName,
         if (businessType != null) 'business_type': businessType,
+        if (country != null && country.isNotEmpty) 'country': country,
+        if (region != null && region.isNotEmpty) 'region': region,
       });
 
       _apiService.token = response['token'];

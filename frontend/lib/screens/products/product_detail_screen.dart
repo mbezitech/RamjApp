@@ -84,7 +84,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: widget.product.isMedicine
-                              ? AppColors.accent
+                              ? AppColors.warning
                               : AppColors.secondary,
                           borderRadius: BorderRadius.circular(6),
                         ),

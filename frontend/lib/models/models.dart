@@ -7,6 +7,8 @@ class User {
   final bool isVerified;
   final String? businessName;
   final String? businessType;
+  final String? country;
+  final String? region;
 
   User({
     required this.id,
@@ -17,6 +19,8 @@ class User {
     required this.isVerified,
     this.businessName,
     this.businessType,
+    this.country,
+    this.region,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -29,6 +33,8 @@ class User {
       isVerified: json['is_verified'] ?? false,
       businessName: json['business_name'],
       businessType: json['business_type'],
+      country: json['country'],
+      region: json['region'],
     );
   }
 
