@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/models.dart';
+import '../../providers/cart_provider.dart';
 import '../../services/api_service.dart';
 import '../../utils/constants.dart';
 import '../../widgets/app_bottom_nav.dart';
+import '../products/cart_screen.dart';
 
 class OrderDetailScreen extends StatefulWidget {
   final Order order;
@@ -133,6 +136,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             style: AppTypography.h3.copyWith(color: AppColors.primary),
           ),
           const Spacer(),
+          _CartAppBarButton(),
+          const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.all(8),
             child: const Icon(Icons.support_agent, color: AppColors.primary),
@@ -356,7 +361,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           child: _SummaryBentoCard(
             icon: Icons.payments,
             label: 'Total Amount',
-            value: '\$${widget.order.totalAmount.toStringAsFixed(2)}',
+            value: 'TZS ${widget.order.totalAmount.toStringAsFixed(2)}',
             valueColor: AppColors.primary,
           ),
         ),
@@ -483,7 +488,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           style: AppTypography.labelMd.copyWith(color: AppColors.secondary),
                         ),
                         Text(
-                          '\$${item.unitPrice.toStringAsFixed(2)}',
+                          'TZS ${item.unitPrice.toStringAsFixed(2)}',
                           style: AppTypography.labelBold.copyWith(
                             color: AppColors.onSurface,
                           ),
@@ -761,6 +766,46 @@ class _SummaryBentoCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CartAppBarButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final cartCount = context.watch<CartProvider>().itemCount;
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen())),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: const Icon(Icons.shopping_cart, color: AppColors.primary),
+          ),
+        ),
+        if (cartCount > 0)
+          Positioned(
+            right: 4,
+            top: 4,
+            child: Container(
+              padding: const EdgeInsets.all(3),
+              decoration: const BoxDecoration(
+                color: AppColors.warning,
+                shape: BoxShape.circle,
+              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              child: Text(
+                '$cartCount',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

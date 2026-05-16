@@ -81,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             bottom: 0,
             left: 0,
             right: 0,
-            child: const AppBottomNav(currentIndex: 2),
+            child: const AppBottomNav(currentIndex: 3),
           ),
         ],
       ),

@@ -840,7 +840,7 @@ class _ProductCard extends StatelessWidget {
                                   color: AppColors.outline, fontSize: 9,
                                 ),
                               ),
-                              Text('\$${product.price.toStringAsFixed(0)}',
+                              Text('TZS ${product.price.toStringAsFixed(0)}',
                                 style: AppTypography.bodySm.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),

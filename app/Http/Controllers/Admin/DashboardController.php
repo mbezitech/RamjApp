@@ -21,6 +21,8 @@ class DashboardController extends Controller
             'equipment' => Product::where('category', 'equipment')->count(),
             'total_orders' => Order::count(),
             'pending_orders' => Order::where('status', 'pending')->count(),
+            'total_revenue' => Order::whereNotIn('status', ['cancelled'])->sum('total_amount'),
+            'low_stock_count' => Product::where('stock', '<', 10)->count(),
         ];
 
         $recentOrders = Order::with('user')->latest()->take(5)->get();

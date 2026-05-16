@@ -52,15 +52,15 @@
                 <td>{{ $item->product->name }}</td>
                 <td>{{ $item->product->sku ?? 'N/A' }}</td>
                 <td>{{ $item->quantity }}</td>
-                <td style="text-align:right">${{ number_format($item->unit_price, 2) }}</td>
-                <td style="text-align:right">${{ number_format($item->subtotal, 2) }}</td>
+                <td style="text-align:right">TZS {{ number_format($item->unit_price, 2) }}</td>
+                <td style="text-align:right">TZS {{ number_format($item->subtotal, 2) }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
 
     <div class="total">
-        Total: ${{ number_format($order->total_amount, 2) }}
+        Total: TZS {{ number_format($order->total_amount, 2) }}
     </div>
 
     <div class="footer">

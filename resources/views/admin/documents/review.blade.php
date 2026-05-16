@@ -3,50 +3,55 @@
 @section('title', 'Document Review')
 
 @section('content')
-    <div class="mb-6">
-        <a href="{{ route('admin.documents.pending') }}" class="text-primary hover:underline">← Back to Pending</a>
+    <div class="mb-md">
+        <a href="{{ URL::previous() }}" class="text-primary text-[11px] font-bold hover:underline inline-flex items-center gap-xs">
+            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            Back
+        </a>
     </div>
 
     <div class="max-w-2xl">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-bold mb-4">{{ strtoupper($document->document_type) }} Certificate</h2>
+        <div class="bg-white border border-outline-variant rounded-xl p-md">
+            <h2 class="text-h3 text-on-surface font-semibold mb-md">{{ strtoupper($document->document_type) }} Certificate</h2>
 
-            <div class="space-y-3 mb-6">
+            <div class="space-y-3 mb-md">
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Business</span>
-                    <span class="font-medium">{{ $document->user->business_name ?? $document->user->name }}</span>
+                    <span class="text-sm text-on-surface-variant">Business</span>
+                    <span class="text-sm font-semibold text-on-surface">{{ $document->user->business_name ?? $document->user->name }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Uploaded</span>
-                    <span class="font-medium">{{ $document->created_at->format('M d, Y - h:i A') }}</span>
+                    <span class="text-sm text-on-surface-variant">Uploaded</span>
+                    <span class="text-sm font-medium text-on-surface">{{ $document->created_at->format('M d, Y - h:i A') }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-600">Status</span>
-                    <span class="px-2 py-1 text-xs rounded-full
-                        @if($document->status == 'approved') bg-green-100 text-green-800
-                        @elseif($document->status == 'rejected') bg-red-100 text-red-800
-                        @else bg-yellow-100 text-yellow-800 @endif">
+                    <span class="text-sm text-on-surface-variant">Status</span>
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded
+                        @if($document->status == 'approved') bg-green-100 text-green-700
+                        @elseif($document->status == 'rejected') bg-red-100 text-red-700
+                        @else bg-yellow-100 text-yellow-700 @endif">
                         {{ ucfirst($document->status) }}
                     </span>
                 </div>
             </div>
 
-            <div class="bg-gray-50 p-4 rounded mb-6">
-                <p class="text-sm text-gray-600 mb-2">Document Preview:</p>
+            <div class="bg-surface-container-low p-md rounded-lg mb-md">
+                <p class="text-sm text-on-surface-variant mb-2">Document Preview:</p>
                 <a href="{{ asset('storage/' . $document->file_path) }}"
                    target="_blank"
-                    class="text-primary hover:underline">
-                     View Document →
+                   class="text-primary text-sm font-bold hover:underline inline-flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                    View Document
                 </a>
             </div>
 
             @if($document->status == 'pending')
-                <div class="flex gap-4">
+                <div class="flex gap-md">
                     <form method="POST" action="{{ route('admin.documents.approve', $document->id) }}" class="flex-1">
                         @csrf
                         <button type="submit"
-                                class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                                class="w-full bg-green-600 text-white py-sm rounded-lg text-[11px] font-bold hover:bg-green-700 transition-colors"
                                 onclick="return confirm('Approve this document?')">
+                            <span class="material-symbols-outlined text-[16px] align-middle mr-1">check</span>
                             Approve
                         </button>
                     </form>
@@ -55,11 +60,12 @@
                         @csrf
                         <div class="mb-2">
                             <textarea name="review_notes" placeholder="Reason for rejection..."
-                                      class="w-full border border-gray-300 rounded px-3 py-2 text-sm" required></textarea>
+                                      class="w-full border border-outline-variant rounded-lg px-sm py-sm text-sm outline-none focus:ring-2 focus:ring-primary" required></textarea>
                         </div>
                         <button type="submit"
-                                class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+                                class="w-full bg-red-600 text-white py-sm rounded-lg text-[11px] font-bold hover:bg-red-700 transition-colors"
                                 onclick="return confirm('Reject this document?')">
+                            <span class="material-symbols-outlined text-[16px] align-middle mr-1">close</span>
                             Reject
                         </button>
                     </form>

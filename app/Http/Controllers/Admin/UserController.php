@@ -63,6 +63,39 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User verification removed.');
     }
 
+    public function activate(User $user)
+    {
+        $user->update(['is_active' => true]);
+
+        return redirect()->back()->with('success', 'User account activated successfully.');
+    }
+
+    public function deactivate(User $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->back()->with('error', 'Cannot deactivate admin users.');
+        }
+
+        $user->update(['is_active' => false]);
+
+        return redirect()->back()->with('success', 'User account deactivated successfully.');
+    }
+
+    public function updateRole(Request $request, User $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->back()->with('error', 'Cannot change admin user role.');
+        }
+
+        $request->validate([
+            'role' => 'required|in:customer,business,admin',
+        ]);
+
+        $user->update(['role' => $request->role]);
+
+        return redirect()->back()->with('success', 'User role updated successfully.');
+    }
+
     public function destroy(User $user)
     {
         if ($user->role === 'admin') {

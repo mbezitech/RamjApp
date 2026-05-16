@@ -18,6 +18,7 @@ class User extends Authenticatable
         'phone',
         'role',
         'is_verified',
+        'is_active',
         'business_name',
         'business_type',
         'country',
@@ -35,6 +36,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_verified' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -51,6 +53,16 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active;
+    }
+
+    public function isSuspended(): bool
+    {
+        return !$this->is_active;
     }
 
     public function isVerifiedBusiness(): bool

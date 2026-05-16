@@ -63,14 +63,6 @@ class CartScreen extends StatelessWidget {
             style: AppTypography.h3.copyWith(color: AppColors.primary),
           ),
           const Spacer(),
-          Text(
-            'MedSpec Procurement',
-            style: AppTypography.labelBold.copyWith(
-              color: AppColors.onSurfaceVariant,
-              letterSpacing: 1.5,
-            ),
-          ),
-          const SizedBox(width: 16),
           Container(
             padding: const EdgeInsets.all(8),
             child: const Icon(Icons.search, color: AppColors.primary),
@@ -215,11 +207,11 @@ class CartScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    _SummaryRow(label: 'Subtotal', value: '\$${subtotal.toStringAsFixed(2)}'),
+                    _SummaryRow(label: 'Subtotal', value: 'TZS ${subtotal.toStringAsFixed(2)}'),
                     const SizedBox(height: 8),
                     _SummaryRow(
                       label: 'Estimated Tax (8%)',
-                      value: '\$${tax.toStringAsFixed(2)}',
+                      value: 'TZS ${tax.toStringAsFixed(2)}',
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -265,7 +257,7 @@ class CartScreen extends StatelessWidget {
                           style: AppTypography.h3.copyWith(color: AppColors.onSurface),
                         ),
                         Text(
-                          '\$${total.toStringAsFixed(2)}',
+                          'TZS ${total.toStringAsFixed(2)}',
                           style: AppTypography.h2.copyWith(color: AppColors.primary),
                         ),
                       ],
@@ -465,7 +457,10 @@ class _CartItemCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    Row(
+                    Wrap(
+                      spacing: 16,
+                      runSpacing: 12,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,12 +473,11 @@ class _CartItemCard extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '\$${item.product.price.toStringAsFixed(2)}',
+                              'TZS ${item.product.price.toStringAsFixed(2)}',
                               style: AppTypography.h3.copyWith(color: AppColors.primary),
                             ),
                           ],
                         ),
-                        const Spacer(),
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(color: AppColors.outlineVariant),

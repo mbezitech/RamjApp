@@ -295,7 +295,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 child: _specCard(
                   Icons.attach_money,
                   'PRICE',
-                  '\$${p.price.toStringAsFixed(2)}',
+                  'TZS ${p.price.toStringAsFixed(2)}',
                 ),
               ),
               const SizedBox(width: 24),
@@ -508,7 +508,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '\$${totalPrice.toStringAsFixed(2)}',
+                      'TZS ${totalPrice.toStringAsFixed(2)}',
                       style: AppTypography.h3.copyWith(
                         fontSize: 20,
                         color: AppColors.onPrimary,

@@ -532,7 +532,7 @@ class _OrderCard extends StatelessWidget {
                     style: AppTypography.bodySm.copyWith(color: AppColors.secondary),
                   ),
                   Text(
-                    '\$${order.totalAmount.toStringAsFixed(2)}',
+                    'TZS ${order.totalAmount.toStringAsFixed(2)}',
                     style: AppTypography.h3.copyWith(
                       color: isCancelled ? AppColors.secondary : AppColors.primary,
                     ),

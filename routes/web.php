@@ -27,6 +27,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
     Route::post('/users/{user}/verify', [UserController::class, 'verify'])->name('admin.users.verify');
     Route::post('/users/{user}/unverify', [UserController::class, 'unverify'])->name('admin.users.unverify');
+    Route::post('/users/{user}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
+    Route::post('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('admin.users.deactivate');
+    Route::post('/users/{user}/role', [UserController::class, 'updateRole'])->name('admin.users.role');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products.index');
@@ -49,4 +52,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings');
     Route::post('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
     Route::post('/settings/test-mail', [AdminSettingsController::class, 'testMail'])->name('admin.settings.test-mail');
+
+    Route::get('/facilities', function () {
+        return view('admin.facilities.index');
+    })->name('admin.facilities.index');
 });

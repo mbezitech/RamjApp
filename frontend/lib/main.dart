@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/connectivity_provider.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/products/product_list_screen.dart';
 import 'utils/constants.dart';
+import 'widgets/no_internet_overlay.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +22,7 @@ class RamjApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
@@ -35,6 +38,7 @@ class RamjApp extends StatelessWidget {
             elevation: 0,
           ),
         ),
+        builder: (context, child) => NoInternetOverlay(child: child!),
         home: const AppInitializer(),
       ),
     );
