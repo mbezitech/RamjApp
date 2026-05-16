@@ -37,9 +37,8 @@
             <div class="bg-surface-container-low p-md rounded-lg mb-md">
                 <p class="text-sm text-on-surface-variant mb-2">Document Preview:</p>
                 <a href="{{ asset('storage/' . $document->file_path) }}"
-                   target="_blank"
                    class="text-primary text-sm font-bold hover:underline inline-flex items-center gap-xs">
-                    <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                    <span class="material-symbols-outlined text-[16px]">visibility</span>
                     View Document
                 </a>
             </div>
